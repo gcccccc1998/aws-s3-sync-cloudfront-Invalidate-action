@@ -1,0 +1,56 @@
+name: 'AWS S3 Sync Action'
+description: 'Sync files to s3 with compare and create cloudfront invalidation.'
+author: wxul
+inputs:
+  aws_bucket_name:
+    description: Bucket name
+    required: true
+
+  aws_bucket_dir:
+    description: Bucket prefix
+    required: false
+
+  aws_bucket_acl:
+    description: Bucket ACL, "private"|"public-read"|"public-read-write"|"authenticated-read"|"aws-exec-read"|"bucket-owner-read"|"bucket-owner-full-control"
+    required: false
+    default: public-read
+
+  aws_bucket_sse:
+    description: The server-side encryption algorithm used when storing this object in Amazon S3 (for example, AES256, aws:kms)
+    required: false
+
+  aws_cloudfront_distribution_id:
+    description: Cloudfront distribution id
+    required: false
+
+  compare:
+    description: Compare ETag with s3 existed files
+    required: false
+    default: "true"
+
+  source:
+    description: Source directory
+    required: true
+
+  concurrent:
+    description: Concurrent count
+    required: false
+    default: '20'
+
+  if_has_failed:
+    description: Choose how to exit the action if some files upload failed (fail or ignore)
+    default: ignore
+
+outputs:
+  error_message:
+    description: The error message, if an error occurs
+  invalidation_id:
+    description: Cloudfront invalidation id if Created
+  uploaded_files:
+    description: Uploaded files
+  invalidation_error:
+    description: Create Invalidation Error
+
+runs:
+  using: 'node20'
+  main: 'lib/index.js'
